@@ -16,13 +16,14 @@ export const register = async (req, res) => {
         password: hashedPassword,
       },
     });
-    console.log(newUser);
+    // console.log(newUser);
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     // console.log(error)
     res.status(500).json({ message: "Failed to create user! Try again." });
   }
 };
+     
 // LOGIN
 export const login = async (req, res) => {
   const { username, password } = req.body;
@@ -56,8 +57,7 @@ export const login = async (req, res) => {
       }
     );
 
-    res
-      .cookie("token", token, {
+    res.cookie("token", token, {
         httpOnly: true,
         maxAge: age,
       })
@@ -72,5 +72,6 @@ export const login = async (req, res) => {
   // db operations
 };
 export const logout = (req, res) => {
+  res.clearCookie("token").status(200).json({message: "Logout successful"})
   // db operations
 };

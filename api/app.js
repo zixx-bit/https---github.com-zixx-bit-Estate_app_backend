@@ -10,9 +10,9 @@ app.use(cookieParser());
 
 app.use("/api/posts", postRoute);
 app.use("/api/auth", authRoute);
-// app.use("/api/auth/register", (req, res) =>{
-//     res.send("Welcome")
-// })
+app.use("/api/auth/regist", (req, res) =>{
+    res.send("Welcome")
+})
 
 app.use("/api/posts/id", (req, res) => {
   res.send("auth works");
