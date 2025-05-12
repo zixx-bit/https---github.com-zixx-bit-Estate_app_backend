@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../lib/prisma.js";
+
 // REGISTER
 export const register = async (req, res) => {
   // destructure data
@@ -13,13 +14,13 @@ export const register = async (req, res) => {
       data: {
         username,
         email,
-        password: hashedPassword,
+        password: hashedPassword
       },
     });
-    // console.log(newUser);
+    console.log(newUser);
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     res.status(500).json({ message: "Failed to create user! Try again." });
   }
 };
@@ -27,7 +28,7 @@ export const register = async (req, res) => {
 // LOGIN
 export const login = async (req, res) => {
   const { username, password } = req.body;
-  try {
+  try { 
     const user = await prisma.user.findUnique({
       where: { username: username },
     });
@@ -41,28 +42,22 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials!" });
     }
     //Generate token to send to the user
-    // const token = jwt.sign({
-    //   id:user.id,
-    // }, process.env.).
-
     const age = 1000 * 60 * 60 * 24 * 7;
 
     const token = jwt.sign(
-      {
-        id: user.id,
-      },
+      {id: user.id,},
       process.env.JWT_SECRET_KEY,
-      {
-        expiresIn: age
-      }
+      {expiresIn: age}
     );
 
+    const {password:userPassword, ...userInfo} = user
     res.cookie("token", token, {
         httpOnly: true,
+        // secure: true,
         maxAge: age,
       })
       .status(200)
-      .json({ message: "Login successful" });
+      .json(userInfo);
     // res.setHeader("Set-Cookie", "test=" + "myValue").json("success");
   } catch (error) {
     console.log(error);
