@@ -14,23 +14,23 @@ export const register = async (req, res) => {
       data: {
         username,
         email,
-        password: hashedPassword
+        password: hashedPassword,
       },
     });
     console.log(newUser);
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ message: "Failed to create user! Try again." });
   }
 };
-     
+
 // LOGIN
 export const login = async (req, res) => {
   const { username, password } = req.body;
-  try { 
+  try {
     const user = await prisma.user.findUnique({
-      where: username,
+      where: { username },
     });
     // Check if user exists
     if (!user) {
@@ -45,13 +45,14 @@ export const login = async (req, res) => {
     const age = 1000 * 60 * 60 * 24 * 7;
 
     const token = jwt.sign(
-      {id: user.id,},
+      { id: user.id, isAdmin: false},
       process.env.JWT_SECRET_KEY,
-      {expiresIn: age}
+      { expiresIn: age }
     );
 
-    const {password:userPassword, ...userInfo} = user
-    res.cookie("token", token, {
+    const { password: userPassword, ...userInfo } = user;
+    res
+      .cookie("token", token, {
         httpOnly: true,
         // secure: true,
         maxAge: age,
@@ -66,7 +67,8 @@ export const login = async (req, res) => {
 
   // db operations
 };
+
 export const logout = (req, res) => {
-  res.clearCookie("token").status(200).json({message: "Logout successful"})
+  res.clearCookie("token").status(200).json({ message: "Logout successful" });
   // db operations
 };

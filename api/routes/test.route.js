@@ -1,5 +1,5 @@
 import express from "express";
-import { shouldBeAdmin, shouldBeLoggedin } from "../controllers/test.controller";
+import { shouldBeAdmin, shouldBeLoggedin } from "../controllers/test.controller.js";
 
 const router = express.Router();
 
